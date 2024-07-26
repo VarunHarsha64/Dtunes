@@ -1,0 +1,221 @@
+.main-container {
+    height: 100vh;
+    width: calc(100% - 100px - 280px);
+    /* //flex-grow: 1; */
+    /* width: auto; */
+    background-color: rgba(34,34,34,0.6);
+    backdrop-filter: blur(10px);
+    border-left: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.home-header {
+    color: #f1f1f1;
+    margin: 20px;
+}
+
+.set-1 .playlist-container,
+.set-2 .playlist-container {
+    display: flex;
+    overflow-x: auto;
+    margin: 5px;
+}
+
+.playlist-card {
+    margin: 1px;
+    padding: 10px;
+    /* backdrop-filter: blur(30px); */
+    /* //background-color: rgba(144, 0, 255, 0.073); */
+    border: 1px solid rgba(255, 255, 255, 0.089);
+    cursor: pointer;
+    
+}
+
+.playlist-card .playlist-image {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+
+.playlist-name {
+    color: #f1f1f1;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.playlist-desc {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+.player {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0.132);
+}
+
+.song-attributes {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.song-attribute-top {
+    display: flex;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0px;
+}
+
+.song-attribute-top div i {
+    font-size: 22px;
+    color: #a0a0a0;
+    cursor: pointer;
+}
+.song-attribute-top div {
+    margin: 0px 4px;
+}
+.song-attribute-top div:hover i {
+    color: #f1f1f1;
+}
+
+.song-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.player-song-image {
+    height: 90px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+}
+
+.song-attribute-bottom {
+    margin-top: 0px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+.song-attribute-bottom .current-time,
+.song-attribute-bottom .duration {
+    color: #f1f1f1;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.playlist-page {
+    padding: 10px;
+}
+
+.playlist-page-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.playlist-page-header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    color: white;
+    margin-left: 10px;
+}
+
+.playlist-page-header-content p {
+    color: #848484;
+}
+
+.playlist-songs-table-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 10px 20px;
+    margin: 10px 0px;
+    border-bottom: solid 1px gray;
+    color: #a3a3a3;
+    font-weight: bold;
+
+}
+
+.table-column-number {
+    margin-right: 30px;
+}
+
+.playlist-songs-table-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 10px 20px;
+    margin: 3px 0px;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.132);
+}
+
+
+/* song player progress bar */
+
+/* .song-attribute-bottom .progress-bar {
+    width: 78%;
+    position: relative;
+    height: 5px;
+    outline: none;
+    border: none;
+    appearance: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.song-attribute-bottom .progress-bar:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    background: #848484;
+    width: 10%;
+    height: 100%;
+    border-radius: 10px;
+    z-index: 2;
+    transition: all 0.3s ease;
+} 
+
+.song-attribute-bottom .progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+} */
+
+.progress-bar {
+    height: 6px;
+    width: 90%;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 0px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.progress-bar-update{
+    height: 99%;
+    width: 0%;
+    background-color: rgb(151, 78, 175);
+}
