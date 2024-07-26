@@ -12,7 +12,7 @@ const Menu = ({title,menuObject, isArtist}) => {
       if (location.pathname === '/') {
         setActiveIndex(0);
       }
-      else if (location.pathname === '/artist'){
+      else if (location.pathname.startsWith('/artist')){
         setActiveIndex(5);
       }
       else {
@@ -26,7 +26,7 @@ const Menu = ({title,menuObject, isArtist}) => {
           navigate('/');
         }
         if(index === 5) {
-          navigate('/artist');
+          navigate('/artist/playlist');
         }
     }
 

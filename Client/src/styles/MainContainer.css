@@ -31,6 +31,12 @@
     /* //background-color: rgba(144, 0, 255, 0.073); */
     border: 1px solid rgba(255, 255, 255, 0.089);
     cursor: pointer;
+    width: 170px;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border-radius: 10px; */
     
 }
 
@@ -219,3 +225,56 @@
     width: 0%;
     background-color: rgb(151, 78, 175);
 }
+
+
+/* Artist Page */
+
+.artist-page {
+    
+}
+
+.artist-navbar {
+    display: flex;
+    background: rgba(0, 0, 0, 0.299);
+    outline: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    color: #848484;
+    height: 50px;
+    padding-left: 20px;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 15px;
+}
+
+.artist-redirect-header {
+    font-size: 20px;
+    margin-right: 20px;
+    width: 80px;
+    color: #858585;
+    background-color: rgba(0, 0, 0, 0.207);
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.artist-redirect-header:hover {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.27);
+}
+
+.artist-redirect-header.active {
+    color: white;
+    background-color: rgba(147, 147, 147, 0.27);
+}
+
+.song-form {
+    height: 100px;
+    width: 100px;
+    background-color: red;
+}
+
