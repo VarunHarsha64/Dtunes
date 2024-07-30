@@ -19,7 +19,7 @@ const DisplayHome = () => {
 
                 playlistData ? playlistData.map((item,index)=>{
                     console.log(item);
-                    return <PlayListItem key={index} image={item.imageUrl} name={item.name} id={item._id} desc={item.desc}/>
+                    return <PlayListItem isPrivate={item.privateStatus} key={index} image={item.imageUrl} name={item.name} id={item._id} desc={item.desc}/>
                 }):""
             }
         </div>

@@ -1,48 +1,76 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { PlayList } from "./PlayList";
-import { SongList } from "./SongList";
 import { PlayerContext } from "../context/playerContext";
+import { IoTrash } from "react-icons/io5";
+import {jwtDecode} from "jwt-decode";
+import {toast} from 'react-hot-toast';
+import axios from "axios";
 
 const DisplayPlayList = () => {
-
-  const { getPlaylistById, getSongById,getSongByIdForPlaylist } = useContext(PlayerContext);
-  console.log(useParams())
+  const { getPlaylistById, getSongByIdForPlaylist, getSongById } = useContext(PlayerContext);
   const { id } = useParams();
   const [playlist, setPlaylist] = useState(null);
-  const [songs, setSongs] = useState(null);
+  const [songs, setSongs] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [isMyPlaylist, setIsMyPlaylist] = useState(false);
 
+  // Decode token and set user ID
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.id);
+    }
+  }, []);
+
+  // Fetch playlist and songs
   useEffect(() => {
     const fetchPlaylist = async () => {
       const playlistData = await getPlaylistById(id);
-      setPlaylist(playlistData);
       console.log(playlistData);
-      const songIds = playlistData.songs;
-
-
+      setPlaylist(playlistData);
       const fetchedSongs = await Promise.all(
-        songIds.map(async (songId) => {
-          console.log(songId);
-          const songData = await getSongByIdForPlaylist(songId);
-          console.log(songData, 'seehere')
-          return songData;
-        })
+        playlistData.songs.map((songId) => getSongByIdForPlaylist(songId))
       );
-      console.log(fetchedSongs);
       setSongs(fetchedSongs);
-      console.log(songs);
     };
     fetchPlaylist();
-  }, [id]);
+  }, [id, getPlaylistById, getSongByIdForPlaylist]);
 
-  if (!playlist || !songs) {
+  // Check if the playlist belongs to the user
+  useEffect(() => {
+    if (userId && playlist) {
+      setIsMyPlaylist(userId === playlist.userId);
+    }
+  }, [userId, playlist]);
+
+  const handleRemoveFromPlaylist = async (songId, e) => {
+    e.stopPropagation(); // Prevent event propagation
+    try {
+      const response = await axios.post('/api/album/removeFromAlbum', {
+        albumId: playlist._id,
+        songId: songId
+      });
+      if (response.data.success) {
+        setSongs(songs.filter(song => song._id !== songId)); // Update the songs list
+        toast.success("Song removed successfully!");
+      } else {
+        toast.error("Failed to remove song");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  if (!playlist) {
     return <div>Loading...</div>;
   }
-  console.log(songs);
+
   return (
     <div className="playlist-page">
       <div className="playlist-page-header">
-        <img src={playlist.image} alt="" />
+        <img src={playlist.imageUrl} alt="" className="playlist-page-header-image"/>
         <div className="playlist-page-header-content">
           <p>playlist</p>
           <h1>{playlist.name}</h1>
@@ -58,15 +86,24 @@ const DisplayPlayList = () => {
         </p>
         <p>Artist</p>
         <p>Likes</p>
+        <p>Dislikes</p>
       </div>
       {songs.map((song, index) => (
-        <div onClick={()=>getSongById(song._id)} key={index} className="playlist-songs-table-rows">
+        <div
+          onClick={() => getSongById(song._id)}
+          key={index}
+          className="playlist-songs-table-rows"
+        >
           <p>
             <b className="table-column-number">{index + 1}</b>
             {song.title}
           </p>
           <p>{song.artist}</p>
           <p>{song.likes}</p>
+          <p>{song.dislikes}</p>
+          <div className="playlist-rows-options">
+            {isMyPlaylist && <i onClick={(e)=>{handleRemoveFromPlaylist(song._id,e)}}><IoTrash /></i>}
+          </div>
         </div>
       ))}
     </div>

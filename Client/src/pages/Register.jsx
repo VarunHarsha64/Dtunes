@@ -37,6 +37,11 @@ const Register = () => {
     }
   };
 
+  const redirectToRegister = () => {
+    navigate('/login');
+  };
+
+
   return (
     <div className="register-container">
       <div className="register-card">
@@ -82,6 +87,8 @@ const Register = () => {
             />
             Register as an Artist
           </label>
+          <br/>
+          <p onClick={redirectToRegister} className='register-redirect'>Already have an account? Sign In here!</p>
           <br/>
           <button type="submit">Register</button>
         </form>

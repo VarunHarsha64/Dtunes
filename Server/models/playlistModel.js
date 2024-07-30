@@ -31,6 +31,7 @@ const playlistSchema = new Schema({
     },
     totalDuration : {
         type: Number,
+        default: 0
     },
     imageUrl: {
         type: String,
@@ -40,7 +41,7 @@ const playlistSchema = new Schema({
         type: String,
         default: "No description found"
     },
-    private : {
+    privateStatus : {
         type: Boolean,
         default: false,
     }

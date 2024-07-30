@@ -6,11 +6,13 @@ import DisplayPlayList from './DisplayPlayList';
 import Player from './Player';
 import { SongList } from './SongList.jsx';
 import DisplayArtistSection from './DisplayArtistSection.jsx';
+import DisplaySearch from './DisplaySearch.jsx';
 
 const MainContainer = () => {
   return (
     <div className='main-container'>
       <Routes>
+        <Route path='/search' element={<DisplaySearch/>}/>
         <Route path='/' element={<DisplayHome/>}/>
         <Route path='/album/:id' element={<DisplayPlayList/>}/>
         <Route path='/artist/*' element={<DisplayArtistSection/>} />

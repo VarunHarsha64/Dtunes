@@ -8,6 +8,9 @@ import { IoMdPause } from "react-icons/io";
 import { IoMdPlay } from "react-icons/io";
 import { ImNext2 } from "react-icons/im";
 import { PlayerContext } from '../context/playerContext';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { jwtDecode } from 'jwt-decode';
 
 const Player = ({song}) => {
 
@@ -18,11 +21,22 @@ const Player = ({song}) => {
     const audioRef = useRef();
     const [isLoaded, setIsLoaded] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+    const [userId, setUserId] = useState();
     const progressBarRef = useRef();
     const [duration, setDuration] = useState(0);
-    const [isLike, setIsLike] = useState(false);
-    const [isDislike, setIsDislike] = useState(false);
+    const [likeStatus, setLikeStatus] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+
+
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        setUserId(decodedToken.id);
+        console.log(userId);
+      }
+    }, []);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -61,35 +75,45 @@ const Player = ({song}) => {
               });
             }
           }
+
+          const handlePreLikeDislike = async ()=>{
+            const response = await axios.post("/api/song/checkLikeDislike",{
+              userId,
+              songId: currentSong._id
+            })
+            setLikeStatus(response.data.result);
+          }
+          handlePreLikeDislike();
         }
       }, [currentSong]);
 
       
-
-    function handleLike(){
-
-        if(isDislike) {
-            setIsDislike(false);
-        }
-        if(isLike){
-            setIsLike(false);
-        } else {
-            setIsLike(true);
-        }
-        
+    const handleLike = async ()=>{
+      try {
+        const response = await axios.post('/api/song/like',{
+          songId:currentSong._id,
+          userId
+        });
+        setLikeStatus(response.data.result);
+      } catch (error) {
+        console.error('Error liking song:', error);
+        toast.error("Error liking song!");
+      }
     }
 
-    function handleDislike(){
-        if(isLike) {
-            setIsLike(false);
-        }
-        if(isDislike){
-            setIsDislike(false);
-        } else {
-            setIsDislike(true);
-        }
-        
+    async function handleDislike(){
+      try {
+        const response = await axios.post('/api/song/dislike',{
+          songId:currentSong._id,
+          userId
+        });
+        setLikeStatus(response.data.result);
+      } catch (error) {
+        console.error('Error disliking song:', error);
+        toast.error("Error disliking song!");
+      }
     }
+
 
     function handlePausePlay() {
         const audio = audioRef.current;
@@ -140,7 +164,7 @@ const Player = ({song}) => {
       <div className="song-attributes">
         <div className='song-attribute-top'>
             <div onClick={()=>handleLike()} className='like-button'>
-                {!isLike ? <i><AiOutlineLike/></i>:<i><AiFillLike/></i>}
+                {!(likeStatus === 1) ? <i><AiOutlineLike/></i>:<i><AiFillLike/></i>}
             </div>
             <div className='prev-button'>
                 <i><ImPrevious2/></i>
@@ -155,7 +179,7 @@ const Player = ({song}) => {
             </div>
             <div onClick={()=>handleDislike()} className='dislike-button'>
                 {
-                    !isDislike ? <i><AiOutlineDislike/></i>:<i><AiFillDislike/></i>
+                    !(likeStatus === -1) ? <i><AiOutlineDislike/></i>:<i><AiFillDislike/></i>
                 }
             </div>
         </div>

@@ -6,7 +6,7 @@ import albumModel from '../models/playlistModel.js';
 export const addAlbum = async(req,res)=>{
     try {
         console.log(req.body)
-        const {name,userId,desc} = req.body;
+        const {name,userId,desc,privateStatus} = req.body;
         console.log(req.file)
         const imageFile = req.file;
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -18,7 +18,7 @@ export const addAlbum = async(req,res)=>{
         const imageUrl = imageUpload.secure_url;
 
         const playlistData = {
-            name, userId,desc, imageUrl,
+            name, userId,desc, imageUrl,privateStatus
         }
 
         const album = albumModel(playlistData);
@@ -57,6 +57,89 @@ export const getAlbumById = async (req,res)=>{
         res.json(album);
     } catch (error) {
         res.json({ error: "Something went wrong at server" });
+    }
+}
+
+export const getAlbumsByUserId = async (req,res)=>{
+    try {
+        const userId = req.params.id;
+        console.log(userId);
+        const albums = await albumModel.find({userId:userId});
+        if (!albums) return res.json({ error: "Albums not found" });
+        res.json(albums);
+    } catch (error) {
+        console.log(error);
+        res.json({ error: "Something went wrong at server" });
+    }
+}
+
+export const updateAlbum = async (req,res)=>{
+    try {
+        const albumId = req.params.id;
+        const userId = req.user.id;
+        const album = await albumModel.findById(albumId);
+        if (!album) return res.json({ error: "Album not found" });
+        if (album.userId.toString() !== userId) return res.json({ error: "You are not authorized to update this album" });
+        const { name, desc, privateStatus } = req.body;
+        const updatedAlbum = await albumModel.findByIdAndUpdate(albumId, { name, desc, privateStatus }, { new: true });
+        res.json(updatedAlbum);
+    } catch (error) {
+        res.json({ error: "Something went wrong" });
+    }
+}
+
+export const addSongToAlbum = async (req,res)=>{
+    try {
+        const {songId, albumId } = req.body;
+        console.log(songId, albumId);
+        if (!songId || !albumId) {
+            return res.status(400).json({ error: 'Song ID and Album ID are required' });
+        }
+
+        const album = await albumModel.findById(albumId);
+        if (!album) {
+            return res.status(404).json({ error: 'Album not found' });
+        }
+
+        // Check if the songId is already in the album's songs list
+        if (album.songs.includes(songId)) {
+            return res.status(400).json({ error: 'Song already exists in the album' });
+        }
+
+        // Add the songId to the album's songs list
+        album.songs.push(songId);
+        await album.save();
+
+        res.status(200).json({ message: 'Song added to album successfully', album });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add song to album' });
+    }
+}
+
+export const removeSongFromAlbum = async (req,res)=>{
+    try {
+        const {songId, albumId } = req.body;
+        console.log(songId, albumId);
+        if (!songId || !albumId) {
+            return res.status(400).json({ error: 'Song ID and Album ID are required' });
+        }
+
+        const album = await albumModel.findById(albumId);
+        if (!album) {
+            return res.status(404).json({ error: 'Album not found' });
+        }
+
+        // Check if the songId is already in the album's songs list
+        if (album.songs.includes(songId)) {
+            album.songs.pull(songId);
+            await album.save();
+            return res.status(200).json({ message: 'Song removed from album successfully', album });
+        } else {
+            return res.status(400).json({ error: 'Song not found in the album' });
+        }
+
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add song to album' });
     }
 }
 

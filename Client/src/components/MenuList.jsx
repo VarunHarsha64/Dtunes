@@ -5,6 +5,7 @@ import { FaThumbsDown } from "react-icons/fa6";
 import { FaUserFriends } from "react-icons/fa";
 import { BiParty } from "react-icons/bi";
 import { MdOutlineTrackChanges } from "react-icons/md";
+import { IoHeadsetSharp } from "react-icons/io5";
 
 
 export const menuList = [
@@ -16,12 +17,12 @@ export const menuList = [
     {
         id: 2,
         icon : <FaThumbsUp/>,
-        name: "Like",
+        name: "Liked Songs",
     },
     {
         id: 3,
-        icon : <FaThumbsDown/>,
-        name: "Dislike",
+        icon : <IoHeadsetSharp />,
+        name: "DJ Mode",
     },
     {
         id: 4,

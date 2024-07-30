@@ -29,7 +29,7 @@ const VerticalText = () => {
       }
     };
 
-    const typingSpeed = isDeleting ? 100 : 200; // Adjust typing speed
+    const typingSpeed = isDeleting ? 50 : 100; // Adjust typing speed
     const typingTimeout = setTimeout(handleTyping, typingSpeed);
 
     return () => clearTimeout(typingTimeout);

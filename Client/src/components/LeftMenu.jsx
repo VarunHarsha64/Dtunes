@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import '../styles/LeftMenu.css';
 import { BsMusicNoteList } from "react-icons/bs";
 import { HiDotsHorizontal } from "react-icons/hi";
@@ -9,11 +9,15 @@ import { menuList } from './MenuList';
 import MenuPlayList from './MenuPlayList';
 import TrackList from './TrackList';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { SearchContext } from '../context/searchContext';
 
 
 
 const LeftMenu = () => {
   const [isArtist, setIsArtist] = useState(false);
+  const navigate = useNavigate();
+  const { setSearchQuery } = useContext(SearchContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -22,6 +26,10 @@ const LeftMenu = () => {
         setIsArtist(decodedToken.isArtist);
     }
 }, []);
+
+  const handleFocus = (e)=>{
+    navigate('/search');
+  }
 
   return (
     <div className='left-menu'>
@@ -32,13 +40,10 @@ const LeftMenu = () => {
         
       </div>
       <div className="search-box">
-        <input type='text' placeholder='Search...' />
-        <BiSearchAlt />
         <div className='search-icon-div'>
             <FaSearch className='search-icon' />
         </div>
-        
-
+        <input onFocus={handleFocus} onChange={e=>setSearchQuery(e.target.value)} type='text' placeholder='Search...' />
       </div>
       <Menu title={"Menu"} menuObject={menuList} isArtist={isArtist}/>
       <MenuPlayList  />

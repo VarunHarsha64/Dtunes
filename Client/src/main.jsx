@@ -5,12 +5,15 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./context/userContext.jsx"; // Import UserProvider
 import PlayerContextProvider from "./context/playerContext.jsx";
+import { SearchProvider } from "./context/searchContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <UserProvider> 
+    <UserProvider>
       <PlayerContextProvider>
-        <App />
+        <SearchProvider>
+          <App />
+        </SearchProvider>
       </PlayerContextProvider>
     </UserProvider>
   </BrowserRouter>

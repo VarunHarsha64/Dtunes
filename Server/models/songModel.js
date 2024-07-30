@@ -42,6 +42,7 @@ const songSchema = new Schema({
     artistId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required : true      
     },
     duration : {
         type: String,

@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import songRoutes from "./routes/songRoutes.js";
 import {v2 as cloudinary} from 'cloudinary';
 import albumRouter from "./routes/albumRoutes.js";
+import searchRouter from './routes/searchRoutes.js'
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', authRoutes);
 app.use('/api/song', songRoutes);
 app.use('/api/album', albumRouter);
+app.use('/api/search', searchRouter)
 
 
 app.get('/', (req, res) => {
