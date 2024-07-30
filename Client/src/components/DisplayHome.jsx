@@ -19,7 +19,7 @@ const DisplayHome = () => {
 
                 playlistData ? playlistData.map((item,index)=>{
                     console.log(item);
-                    return <PlayListItem isPrivate={item.privateStatus} key={index} image={item.imageUrl} name={item.name} id={item._id} desc={item.desc}/>
+                    return <PlayListItem isPrivate={item.privateStatus} key={index} image={item.imageUrl} name={item.name} id={item._id} desc={item.desc} likes={item.likes} dislikes={item.dislikes}/>
                 }):""
             }
         </div>
@@ -30,7 +30,7 @@ const DisplayHome = () => {
         {
             songData ? songData.map((item,index)=>{
                 console.log(item)
-                return <SongItem key={index} image={item.imageUrl} name={item.title} id={item._id} desc={item.artist}/>
+                return <SongItem key={index} image={item.imageUrl} name={item.title} id={item._id} desc={item.artist} likes={item.likes} dislikes={item.dislikes}/>
             }):""
         }
         </div>

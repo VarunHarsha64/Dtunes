@@ -40,9 +40,6 @@ const LeftMenu = () => {
         
       </div>
       <div className="search-box">
-        <div className='search-icon-div'>
-            <FaSearch className='search-icon' />
-        </div>
         <input onFocus={handleFocus} onChange={e=>setSearchQuery(e.target.value)} type='text' placeholder='Search...' />
       </div>
       <Menu title={"Menu"} menuObject={menuList} isArtist={isArtist}/>
