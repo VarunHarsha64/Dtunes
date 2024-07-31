@@ -45,14 +45,8 @@ const DisplayPlayList = () => {
     }
   }, [userId, playlist]);
 
-  const handlePlayPlaylist = async () => {
-    try {
-      console.log(songs);
-      setPlaylistQueue(songs);
-    } catch (error) {
-      
-    }
-
+  const handlePlayPlaylist = () => {
+    setPlayPlaylist(id);
   }
 
   useEffect(()=>{

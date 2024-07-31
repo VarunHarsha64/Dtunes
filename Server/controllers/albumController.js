@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from 'cloudinary';
 import albumModel from '../models/playlistModel.js';
+import songModel from '../models/songModel.js'
 
 
 
@@ -142,6 +143,24 @@ export const removeSongFromAlbum = async (req,res)=>{
         res.status(500).json({ error: 'Failed to add song to album' });
     }
 }
+
+export const getSongsOfPlaylist = async (req,res)=>{
+    try {
+        const playlistId = req.params.id;
+        const playlist = await albumModel.findById(playlistId);
+        if (!playlist) {
+            return res.status(404).json({ error: 'Playlist not found' });
+        }
+        const songs = await Promise.all(playlist.songs.map(async (songId) => {
+            const song = await songModel.findById(songId);
+            return song;
+        }));
+        res.status(200).json({ songs });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch songs of playlist' });
+    }
+}
+
 
 
 
