@@ -1,4 +1,4 @@
-import { Children, createContext, useEffect } from "react";
+import { Children, createContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 
@@ -12,6 +12,12 @@ const PlayerContextProvider = ({children}) => {
     const [songData, setSongData] = useState([]);
     const [playlistData, setPlaylistData] = useState([]);
     const [currentSong, setCurrentSong] = useState(null);
+    const [playlistQueue, setPlaylistQueue] = useState(null);
+    const [playlistQueueId, setPlaylistQueueId]= useState(null);
+    const audioRef = useRef();
+
+
+
 
 
     const getSongsData = async () => {
@@ -40,7 +46,9 @@ const PlayerContextProvider = ({children}) => {
         console.log(id, 'seeeeeee herereerere');
         try {
             const response = await axios.get(`${url}/api/song/get/${id}`);
+            console.log(response.data);
             return response.data;
+           
         } catch (error) {
             console.error(error);
         }
@@ -67,6 +75,17 @@ const PlayerContextProvider = ({children}) => {
         }
     };
 
+    const setPlayPlaylist = async (id) => {
+        try {
+            if(playlistQueue) {
+                setCurrentSong(playlistQueue[0]);
+            }
+        } catch (error) {
+            
+        }
+    }
+
+
     useEffect(()=>{
         getSongsData();
         getPlaylistData();
@@ -81,7 +100,13 @@ const PlayerContextProvider = ({children}) => {
         getPlaylistData,
         getSongById,
         getPlaylistById,
-        getSongByIdForPlaylist
+        getSongByIdForPlaylist,
+        playlistQueue,
+        setPlaylistQueue,
+        playlistQueueId,
+        setPlaylistQueueId,
+        setPlayPlaylist,
+        audioRef
     }
     return (
         <PlayerContext.Provider value={contextValue}>

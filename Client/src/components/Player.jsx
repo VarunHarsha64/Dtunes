@@ -14,12 +14,10 @@ import { jwtDecode } from 'jwt-decode';
 
 const Player = ({song}) => {
 
-    const { getSongsData ,songData, playlistData, currentSong, setCurrentSong } = useContext(PlayerContext);
+    const { getSongsData ,songData, playlistData, currentSong, setCurrentSong, audioRef } = useContext(PlayerContext);
     
     
     const progressBar = useRef();
-    const audioRef = useRef();
-    const [isLoaded, setIsLoaded] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [userId, setUserId] = useState();
     const progressBarRef = useRef();
