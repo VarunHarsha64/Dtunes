@@ -38,7 +38,7 @@ const VerticalText = () => {
   useEffect(()=>{
     if(!currentSong) return;
     console.log(currentSong);
-    setWords([currentSong.title.toUpperCase()+'...',currentSong.artist.toUpperCase()+'...'])
+    setWords([currentSong.title.toUpperCase(),currentSong.artist.toUpperCase()])
   },[currentSong])
 
   return (

@@ -25,6 +25,8 @@ const AppContent = () => {
         <Route path='/register' element={user ? <Navigate to='/' /> : <Register />} />
         <Route path='/login' element={user ? <Navigate to='/' /> : <Login />} />
       </Routes>
+
+      <div ></div>
     </>
   );
 };

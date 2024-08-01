@@ -132,7 +132,9 @@ export const removeSongFromAlbum = async (req,res)=>{
 
         // Check if the songId is already in the album's songs list
         if (album.songs.includes(songId)) {
-            album.songs.pull(songId);
+            console.log(album);
+            await album.songs.pull(songId);
+            console.log(album);
             await album.save();
             return res.status(200).json({ message: 'Song removed from album successfully', album });
         } else {

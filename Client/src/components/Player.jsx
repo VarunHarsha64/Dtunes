@@ -11,9 +11,14 @@ import { PlayerContext } from "../context/playerContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
+import { FaPlus } from "react-icons/fa";
+import { useOverlay } from "../context/overlayContext";
 
 const Player = ({ song }) => {
-  const { playNextSong, playPreviousSong ,currentSong, audioRef } = useContext(PlayerContext);
+  const { playNextSong, playPreviousSong, currentSong, audioRef } =
+    useContext(PlayerContext);
+
+  const { showOverlay, hideOverlay } = useOverlay();
 
   const progressBar = useRef();
   const [currentTime, setCurrentTime] = useState(0);
@@ -22,6 +27,8 @@ const Player = ({ song }) => {
   const [duration, setDuration] = useState(0);
   const [likeStatus, setLikeStatus] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playlistId, setPlaylistId] = useState("");
+  const [playlists, setPlaylists] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,6 +39,23 @@ const Player = ({ song }) => {
       console.log(userId);
     }
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      const fetchPlaylists = async () => {
+        try {
+          console.log(userId);
+          const response = await axios.get(`/api/album/userGet/${userId}`);
+          setPlaylists(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error fetching playlists:", error);
+        }
+      };
+
+      fetchPlaylists();
+    }
+  }, [userId]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -54,12 +78,12 @@ const Player = ({ song }) => {
 
       audio.addEventListener("timeupdate", handleTimeUpdate);
       audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener("ended", handleEnded);
 
       return () => {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
         audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener("ended", handleEnded);
       };
     }
   }, [currentSong]);
@@ -152,6 +176,48 @@ const Player = ({ song }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  function handleOnSubmit() {
+
+    e.preventDefault();
+
+    async function addToAlbum() {
+      try {
+        const response1 = await axios.post('/api/album/addToAlbum',{
+          albumId : playlistId,
+          songId : currentSong._id
+      });
+      } catch (error) {
+        console.log(error);
+        toast.error("Error adding song to playlist!");
+      }
+    }
+
+    addToAlbum();
+      
+  }
+
+  const handleAddToPlaylist = () => {
+    showOverlay(
+      <form onSubmit={handleOnSubmit}>
+        <label>Playlist:</label>
+        <select
+          value={playlistId}
+          onChange={(e) => 
+            setPlaylistId(e.target.value)}
+          required
+        >
+          <option value="">Select Playlist</option>
+          {playlists.map((playlist) => (
+            <option key={playlist._id} value={playlist._id}>
+              {playlist.name}
+            </option>
+          ))}
+        </select>
+        <button type="submit">Add Song</button>
+      </form>
+    );
+  };
+
   if (!currentSong) {
     return <div>Loading...</div>;
   }
@@ -173,7 +239,7 @@ const Player = ({ song }) => {
               </i>
             )}
           </div>
-          <div onClick={()=> playPreviousSong()} className="prev-button">
+          <div onClick={() => playPreviousSong()} className="prev-button">
             <i>
               <ImPrevious2 />
             </i>
@@ -189,7 +255,7 @@ const Player = ({ song }) => {
               </i>
             )}
           </div>
-          <div onClick={()=>playNextSong()} className="next-button">
+          <div onClick={() => playNextSong()} className="next-button">
             <i>
               <ImNext2 />
             </i>
@@ -204,6 +270,12 @@ const Player = ({ song }) => {
                 <AiFillDislike />
               </i>
             )}
+          </div>
+
+          <div onClick={handleAddToPlaylist}>
+            <i>
+              <FaPlus />
+            </i>
           </div>
         </div>
         <div className="song-attribute-bottom">

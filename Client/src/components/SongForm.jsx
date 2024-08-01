@@ -74,8 +74,6 @@ const SongForm = () => {
                 });
                 if (response2.data.error) {
                     toast.error(response2.data.error);
-                } else {
-                    toast.success(response2.data.message);
                 }
                 setTitle('');
                 setArtist('');

@@ -62,6 +62,8 @@ const DisplayPlayList = () => {
         albumId: playlist._id,
         songId: songId,
       });
+
+      console.log(response);
       if (response.data.success) {
         setSongs(songs.filter((song) => song._id !== songId)); // Update the songs list
         toast.success("Song removed successfully!");
