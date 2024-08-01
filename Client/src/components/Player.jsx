@@ -12,14 +12,10 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
 import { FaPlus } from "react-icons/fa";
-import { useOverlay } from "../context/overlayContext";
 
 const Player = ({ song }) => {
   const { playNextSong, playPreviousSong, currentSong, audioRef } =
     useContext(PlayerContext);
-
-  const { showOverlay, hideOverlay } = useOverlay();
-
   const progressBar = useRef();
   const [currentTime, setCurrentTime] = useState(0);
   const [userId, setUserId] = useState();
@@ -29,6 +25,7 @@ const Player = ({ song }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlistId, setPlaylistId] = useState("");
   const [playlists, setPlaylists] = useState([]);
+  const [showPlaylistOverlay, setShowPlaylistOverlay] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -176,46 +173,23 @@ const Player = ({ song }) => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  function handleOnSubmit() {
+  const togglePlaylistOverlay = () => {
+    setShowPlaylistOverlay(!showPlaylistOverlay);
+  };
 
-    e.preventDefault();
-
-    async function addToAlbum() {
-      try {
-        const response1 = await axios.post('/api/album/addToAlbum',{
-          albumId : playlistId,
-          songId : currentSong._id
+  const handleAddToPlaylist = async (playlistId) => {
+    try {
+      const response = await axios.post('/api/album/addToAlbum',{
+        albumId : playlistId,
+        songId : currentSong._id
       });
-      } catch (error) {
-        console.log(error);
-        toast.error("Error adding song to playlist!");
-      }
+
+      toast.success("Song added to playlist!");
+      setShowPlaylistOverlay(false);
+    } catch (error) {
+      console.error("Error adding song to playlist:", error);
+      toast.error("Error adding song to playlist!");
     }
-
-    addToAlbum();
-      
-  }
-
-  const handleAddToPlaylist = () => {
-    showOverlay(
-      <form onSubmit={handleOnSubmit}>
-        <label>Playlist:</label>
-        <select
-          value={playlistId}
-          onChange={(e) => 
-            setPlaylistId(e.target.value)}
-          required
-        >
-          <option value="">Select Playlist</option>
-          {playlists.map((playlist) => (
-            <option key={playlist._id} value={playlist._id}>
-              {playlist.name}
-            </option>
-          ))}
-        </select>
-        <button type="submit">Add Song</button>
-      </form>
-    );
   };
 
   if (!currentSong) {
@@ -272,7 +246,7 @@ const Player = ({ song }) => {
             )}
           </div>
 
-          <div onClick={handleAddToPlaylist}>
+          <div onClick={togglePlaylistOverlay}>
             <i>
               <FaPlus />
             </i>
@@ -292,6 +266,31 @@ const Player = ({ song }) => {
         </div>
         <audio ref={audioRef} src={currentSong.audioUrl}></audio>
       </div>
+
+      {showPlaylistOverlay && (
+        <div className="playlist-overlay">
+          <div className="playlist-overlay-header">
+          <label>Playlist:</label>
+          <p onClick={togglePlaylistOverlay}>x</p>
+          </div>
+          
+          <div className="choose-playlist-and-add">
+            <select
+              value={playlistId}
+              onChange={(e) => setPlaylistId(e.target.value)}
+              required
+            >
+              <option value="">Select Playlist</option>
+              {playlists.map((playlist) => (
+                <option key={playlist._id} value={playlist._id}>
+                  {playlist.name}
+                </option>
+              ))}
+            </select>
+            <button onClick={()=>handleAddToPlaylist(playlistId)}>Add Song</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

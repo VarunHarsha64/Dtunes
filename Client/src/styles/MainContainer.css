@@ -491,16 +491,46 @@
   opacity: .75;
 }
 
-
-.modal {
+.playlist-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: 65%;
+  left: 20%;
+  width: 60%;
+  max-width: 400px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+}
+
+.playlist-overlay button {
+  background-color: #9f35dc;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  
+}
+
+.playlist-overlay button:hover {
+  background-color: #9423c8;
+}
+
+.choose-playlist-and-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.playlist-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.playlist-overlay-header label {
+  margin-bottom: 0;
 }

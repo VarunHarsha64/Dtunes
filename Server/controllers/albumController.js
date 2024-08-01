@@ -91,22 +91,21 @@ export const updateAlbum = async (req,res)=>{
 
 export const addSongToAlbum = async (req,res)=>{
     try {
-        const {songId, albumId } = req.body;
+        const {songId, albumId} = req.body;
         console.log(songId, albumId);
         if (!songId || !albumId) {
+            console.log("returning....")
             return res.status(400).json({ error: 'Song ID and Album ID are required' });
         }
 
         const album = await albumModel.findById(albumId);
         if (!album) {
+            console.log('returning2...')
             return res.status(404).json({ error: 'Album not found' });
         }
 
         // Check if the songId is already in the album's songs list
-        if (album.songs.includes(songId)) {
-            return res.status(400).json({ error: 'Song already exists in the album' });
-        }
-
+        console.log('no error until here')
         // Add the songId to the album's songs list
         album.songs.push(songId);
         await album.save();
@@ -117,34 +116,42 @@ export const addSongToAlbum = async (req,res)=>{
     }
 }
 
-export const removeSongFromAlbum = async (req,res)=>{
+export const removeSongFromAlbum = async (req, res) => {
     try {
-        const {songId, albumId } = req.body;
-        console.log(songId, albumId);
+        const { songId, albumId } = req.body;
+
         if (!songId || !albumId) {
+            console.error('Song ID and Album ID are required');
             return res.status(400).json({ error: 'Song ID and Album ID are required' });
         }
 
         const album = await albumModel.findById(albumId);
         if (!album) {
+            console.error(`Album not found: ${albumId}`);
             return res.status(404).json({ error: 'Album not found' });
         }
 
-        // Check if the songId is already in the album's songs list
-        if (album.songs.includes(songId)) {
-            console.log(album);
-            await album.songs.pull(songId);
-            console.log(album);
-            await album.save();
-            return res.status(200).json({ message: 'Song removed from album successfully', album });
-        } else {
+        console.log('Before removing song:', album.songs);
+
+        // Remove the songId from the album's songs list
+        const initialLength = album.songs.length;
+        album.songs.pull(songId);
+
+        // Check if the song was actually removed
+        if (album.songs.length === initialLength) {
+            console.error('Song not found in the album');
             return res.status(400).json({ error: 'Song not found in the album' });
         }
 
+        await album.save();
+        console.log('After removing song:', album.songs);
+
+        res.status(200).json({ success:true,message: 'Song removed from album successfully', album });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to add song to album' });
+        console.error('Error removing song from album:', error);
+        res.status(500).json({ error: 'Failed to remove song from album' });
     }
-}
+};
 
 export const getSongsOfPlaylist = async (req,res)=>{
     try {
